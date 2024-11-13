@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk:23.0.1-jdk
+FROM gradle:8.8-jdk-21-and-22-alpine
 
 WORKDIR /app
 
