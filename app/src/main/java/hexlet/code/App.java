@@ -2,8 +2,15 @@ package hexlet.code;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import gg.jte.ContentType;
+import gg.jte.TemplateEngine;
+import gg.jte.resolve.ResourceCodeResolver;
+import hexlet.code.controller.MainController;
+import hexlet.code.controller.UrlsController;
 import hexlet.code.repository.BaseRepository;
+import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
+import io.javalin.rendering.template.JavalinJte;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +27,12 @@ public class App {
     private static final String DATABASE_SCHEMA = "schema.sql";
     private static final String APP_PORT_DEFAULT = "7070";
     private static final String DATABASE_URL = "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;";
+
+    private static TemplateEngine createTemplateEngine() {
+        ClassLoader classLoader = App.class.getClassLoader();
+        ResourceCodeResolver codeResolver = new ResourceCodeResolver("templates", classLoader);
+        return TemplateEngine.create(codeResolver, ContentType.Html);
+    }
 
     private static String readSchemaFile() throws IOException {
         var schemaStream = App.class.getClassLoader().getResourceAsStream(DATABASE_SCHEMA);
@@ -55,9 +68,12 @@ public class App {
         log.info("Setup routes");
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
+            config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
 
-        app.get("/", ctx -> ctx.result("Hello World"));
+        app.get(NamedRoutes.index(), MainController::form);
+        app.get(NamedRoutes.urls(), UrlsController::list);
+        app.post(NamedRoutes.urls(), UrlsController::create);
 
         return app;
     }
