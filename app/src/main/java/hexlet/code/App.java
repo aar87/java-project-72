@@ -65,15 +65,17 @@ public class App {
         }
         BaseRepository.dataSource = dataSource;
 
-        log.info("Setup routes");
+        log.info("Setup Javalin application");
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
 
-        app.get(NamedRoutes.index(), MainController::form);
-        app.get(NamedRoutes.urls(), UrlsController::list);
-        app.post(NamedRoutes.urls(), UrlsController::create);
+        log.info("Setup routes");
+        app.get(NamedRoutes.indexPath(), MainController::form);
+        app.get(NamedRoutes.urlsPath(), UrlsController::list);
+        app.post(NamedRoutes.urlsPath(), UrlsController::create);
+        app.get(NamedRoutes.urlPath("{id}"), UrlsController::show);
 
         return app;
     }

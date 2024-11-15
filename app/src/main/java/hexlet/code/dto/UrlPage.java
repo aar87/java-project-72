@@ -1,4 +1,5 @@
-package hexlet.code;
+package hexlet.code.dto;
+import hexlet.code.model.Url;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class UrlPage {
-    private String[] url;
+public class UrlPage extends BasePage {
+    private Url url;
 }
