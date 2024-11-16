@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 
 public class App {
-    private static final Logger log = LoggerFactory.getLogger(App.class);
+    private static final Logger APP_LOG = LoggerFactory.getLogger(App.class);
     private static final String DATABASE_SCHEMA = "schema.sql";
     private static final String APP_PORT_DEFAULT = "7070";
     private static final String DATABASE_URL = "jdbc:h2:mem:project;DB_CLOSE_DELAY=-1;";
@@ -43,35 +43,35 @@ public class App {
     }
 
     public static void main(String[] args) throws SQLException, IOException {
-        log.info("App main init");
+        APP_LOG.info("App main init");
         var javalin = getApp();
         javalin.start(Integer.parseInt(System.getenv().getOrDefault("PORT", APP_PORT_DEFAULT)));
-        log.info("App is running");
+        APP_LOG.info("App is running");
     }
 
     public static Javalin getApp() throws IOException, SQLException {
-        log.info("Setup database");
+        APP_LOG.info("Setup database");
         var hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(String.valueOf(System.getenv().getOrDefault("JDBC_DATABASE_URL", DATABASE_URL)));
 
-        log.info("Init database structures");
+        APP_LOG.info("Init database structures");
         var dataSource = new HikariDataSource(hikariConfig);
         var sql = readSchemaFile();
 
-        log.info(sql);
+        APP_LOG.info(sql);
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()) {
             statement.execute(sql);
         }
         BaseRepository.dataSource = dataSource;
 
-        log.info("Setup Javalin application");
+        APP_LOG.info("Setup Javalin application");
         var app = Javalin.create(config -> {
             config.bundledPlugins.enableDevLogging();
             config.fileRenderer(new JavalinJte(createTemplateEngine()));
         });
 
-        log.info("Setup routes");
+        APP_LOG.info("Setup routes");
         app.get(NamedRoutes.indexPath(), MainController::form);
         app.get(NamedRoutes.urlsPath(), UrlsController::list);
         app.post(NamedRoutes.urlsPath(), UrlsController::create);
