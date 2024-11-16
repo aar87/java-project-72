@@ -1,6 +1,6 @@
 @import hexlet.code.dto.UrlListPage
-@import java.time.format.DateTimeFormatter
 @import hexlet.code.model.Url
+@import hexlet.code.util.DateFormat
 @param UrlListPage page = null
 
 @template.layout.page(
@@ -30,7 +30,7 @@
                                 </td>
                                 <td>
                                     @if(page.getUrlChecks().containsKey(url.getId()))
-                                        ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(page.getUrlChecks().get(url.getId()).getCreatedAt())}
+                                        ${DateFormat.build(page.getUrlChecks().get(url.getId()).getCreatedAt())}
                                     @endif
                                 </td>
                                 <td>
