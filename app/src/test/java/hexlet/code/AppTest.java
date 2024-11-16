@@ -27,7 +27,7 @@ import io.javalin.testtools.JavalinTest;
 public class AppTest {
 
     private static Javalin app;
-    private static MockWebServer mockServer;
+    private static MockWebServer mockServer = new MockWebServer();
 
     @BeforeEach
     public final void setUp() throws IOException, SQLException {
@@ -90,7 +90,6 @@ public class AppTest {
 
     @Test
     public void testCreateUrlCheck() throws Exception {
-        MockWebServer mockServer = new MockWebServer();
         String expectedBody = Files.readString(Path.of("src/test/resources/example.html"));
         mockServer.enqueue(new MockResponse().setBody(expectedBody));
         mockServer.start();
