@@ -27,7 +27,7 @@ import io.javalin.testtools.JavalinTest;
 public class AppTest {
 
     private static Javalin app;
-    private static final MockWebServer mockServer = new MockWebServer();
+    private static final MockWebServer MOCK_WEB_SERVER = new MockWebServer();
 
     @BeforeEach
     public final void setUp() throws IOException, SQLException {
@@ -37,7 +37,7 @@ public class AppTest {
     @AfterAll
     public static void afterAll() throws IOException {
         app.stop();
-        mockServer.shutdown();
+        MOCK_WEB_SERVER.shutdown();
     }
 
     @Test
@@ -89,9 +89,9 @@ public class AppTest {
     @Test
     public void testCreateUrlCheck() throws Exception {
         String expectedBody = Files.readString(Path.of("src/test/resources/example.html"));
-        mockServer.enqueue(new MockResponse().setBody(expectedBody));
-        mockServer.start();
-        HttpUrl mockWebUrl = mockServer.url("/");
+        MOCK_WEB_SERVER.enqueue(new MockResponse().setBody(expectedBody));
+        MOCK_WEB_SERVER.start();
+        HttpUrl mockWebUrl = MOCK_WEB_SERVER.url("/");
 
         var url = new Url(mockWebUrl.toString());
         UrlRepository.save(url);
