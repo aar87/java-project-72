@@ -3,6 +3,7 @@ package hexlet.code.controller;
 import hexlet.code.dto.UrlListPage;
 import hexlet.code.dto.UrlPage;
 import hexlet.code.model.Url;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.Flash;
 import hexlet.code.util.NamedRoutes;
@@ -50,7 +51,9 @@ public class UrlsController {
         var id = ctx.pathParamAsClass("id", Long.class).get();
         var url = UrlRepository.find(id)
                 .orElseThrow(() -> new NotFoundResponse("Url with id = " + id + " not found"));
-        var page = new UrlPage(url);
+        var urlChecks = UrlCheckRepository.getEntitiesForUrlId(id);
+        var page = new UrlPage(url, urlChecks);
+        page.setFlash(ctx.consumeSessionAttribute("flash"));
         ctx.render("urls/show.jte", model("page", page));
     }
 }

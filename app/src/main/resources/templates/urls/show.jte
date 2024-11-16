@@ -1,4 +1,5 @@
 @import hexlet.code.dto.UrlPage
+@import hexlet.code.model.UrlCheck
 @import java.time.format.DateTimeFormatter
 @param UrlPage page = null
 
@@ -19,13 +20,13 @@
                 </tr>
                 <tr>
                     <td>Дата создания</td>
-                    <td>${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").format(page.getUrl().getCreatedAt())}</td>
+                    <td>${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(page.getUrl().getCreatedAt())}</td>
                 </tr>
                 </tbody>
             </table>
 
             <h2 class="mt-5">Проверки</h2>
-            <form method="post" action="/urls/1/checks">
+            <form method="post" action="/urls/${page.getUrl().getId()}/checks">
                 <button type="submit" class="btn btn-primary">Запустить проверку</button>
             </form>
 
@@ -39,7 +40,28 @@
                     <th class="col-2">Дата проверки</th>
                 </thead>
                 <tbody>
-
+                    @for(UrlCheck urlCheck: page.getUrlCheck())
+                        <tr>
+                            <td>
+                                ${urlCheck.getId()}
+                            </td>
+                            <td>
+                                ${urlCheck.getStatusCode()}
+                            </td>
+                            <td>
+                                ${urlCheck.getTitle()}
+                            </td>
+                            <td>
+                                ${urlCheck.getH1()}
+                            </td>
+                            <td>
+                                ${urlCheck.getDescription()}
+                            </td>
+                            <td>
+                                ${DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").format(urlCheck.getCreatedAt())}
+                            </td>
+                        </tr>
+                    @endfor
                 </tbody>
             </table>
         </div>
