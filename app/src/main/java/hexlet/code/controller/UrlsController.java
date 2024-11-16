@@ -3,6 +3,7 @@ package hexlet.code.controller;
 import hexlet.code.dto.UrlListPage;
 import hexlet.code.dto.UrlPage;
 import hexlet.code.model.Url;
+import hexlet.code.model.UrlCheck;
 import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 import hexlet.code.util.Flash;
@@ -13,13 +14,15 @@ import io.javalin.http.NotFoundResponse;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import static io.javalin.rendering.template.TemplateUtil.model;
 
 public class UrlsController {
     public static void list(Context ctx) throws SQLException {
         List<Url> urls = UrlRepository.getEntities();
-        var page = new UrlListPage(urls);
+        Map<Long, UrlCheck> urlChecks = UrlCheckRepository.getLatestUrlChecks();
+        var page = new UrlListPage(urls, urlChecks);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         ctx.render("urls/index.jte", model("page", page));
     }

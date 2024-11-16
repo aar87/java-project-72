@@ -11,6 +11,7 @@ import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -39,9 +40,14 @@ public class UrlCheckController {
                     ? Objects.requireNonNull(node.selectFirst("h1")).text()
                     : "";
 
-            String description = node.selectFirst("meta[name=description]") != null
-                    ? Objects.requireNonNull(node.selectFirst("meta[name=description]")).text()
-                    : "";
+            String description = "";
+            Element descriptionNode = node.selectFirst("meta[name=description]");
+
+            if (descriptionNode != null) {
+                if (descriptionNode.hasAttr("content")) {
+                    description = descriptionNode.attr("content");
+                }
+            }
 
             UrlCheck urlCheck = new UrlCheck(id, statusCode, title, h1, description);
             UrlCheckRepository.save(urlCheck);

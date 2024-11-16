@@ -27,7 +27,7 @@ import io.javalin.testtools.JavalinTest;
 public class AppTest {
 
     private static Javalin app;
-    private static MockWebServer mockServer = new MockWebServer();
+    private static final MockWebServer mockServer = new MockWebServer();
 
     @BeforeEach
     public final void setUp() throws IOException, SQLException {
@@ -37,9 +37,7 @@ public class AppTest {
     @AfterAll
     public static void afterAll() throws IOException {
         app.stop();
-        if (mockServer != null) {
-            mockServer.shutdown();
-        }
+        mockServer.shutdown();
     }
 
     @Test

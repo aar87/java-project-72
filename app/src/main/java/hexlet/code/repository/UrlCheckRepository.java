@@ -6,6 +6,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import hexlet.code.model.UrlCheck;
 
@@ -58,6 +60,29 @@ public class UrlCheckRepository extends BaseRepository {
                 result.add(urlCheck);
             }
             return result;
+        }
+    }
+
+    public static Map<Long, UrlCheck> getLatestUrlChecks() throws SQLException {
+        var map = new HashMap<Long, UrlCheck>();
+        var sql = "SELECT * FROM url_checks";
+        try (var conn = dataSource.getConnection();
+             var stmt = conn.prepareStatement(sql)) {
+            var resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                long urlId = resultSet.getLong("url_id");
+                long checkId = resultSet.getLong("id");
+                int statusCode = resultSet.getInt("status_code");
+                String h1 = resultSet.getString("h1");
+                String title = resultSet.getString("title");
+                String description = resultSet.getString("description");
+                LocalDateTime createdAt = resultSet.getTimestamp("created_at").toLocalDateTime();
+                var urlCheck = new UrlCheck(urlId, statusCode, title, h1, description);
+                urlCheck.setCreatedAt(createdAt);
+                urlCheck.setId(checkId);
+                map.put(urlId, urlCheck);
+            }
+            return map;
         }
     }
 }
