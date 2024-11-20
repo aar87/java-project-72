@@ -41,7 +41,7 @@ public class UrlsController {
 
         if (UrlRepository.isNameAlreadyExists(hostname)) {
             ctx.sessionAttribute("flash", new Flash("Страница уже существует", "info"));
-            ctx.redirect(NamedRoutes.indexPath());
+            ctx.redirect(NamedRoutes.urlsPath());
             return;
         }
 
